@@ -1,17 +1,13 @@
 /*
 *********************************************************************
-http://www.mysqltutorial.org
-*********************************************************************
-Name: MySQL Sample Database for Python
-Link: http://www.mysqltutorial.org/
-Version 1.1
+편의점 고객 멤버십 계산 프로그램 데이터베이스
+버전: 1.0
+날짜: 2025-03-19
 *********************************************************************
 */
 
-/*!40101 SET NAMES utf8 */;
-
-/*!40101 SET SQL_MODE=''*/;
-
+/*!40101 SET NAMES utf8mb4 */;
+/*!40101 SET SQL_MODE='' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
@@ -39,9 +35,8 @@ CREATE TABLE `Customers` (
     `customer_id` INT NOT NULL AUTO_INCREMENT COMMENT '회원번호',
     `name` VARCHAR(15) NOT NULL COMMENT '이름',
     `phone` CHAR(11) NOT NULL COMMENT '전화번호 (01012345678 형식)',
-    `gender` ENUM('M', 'F', 'O') NOT NULL DEFAULT 'O' COMMENT '성별 (Male, Female, Other)',
+    `gender` ENUM('M', 'F', 'O') NOT NULL DEFAULT 'O' COMMENT '성별 (남성, 여성, 기타)',
     `join_date` DATE NOT NULL COMMENT '가입 날짜',
-    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성 시각',
     PRIMARY KEY (`customer_id`),
     UNIQUE KEY `uk_phone` (`phone`)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -62,8 +57,8 @@ CREATE TABLE `Logs` (
 -- 6. Grade_Tiers 테이블
 CREATE TABLE `Grade_Tiers` (
     `tier_id` INT NOT NULL AUTO_INCREMENT COMMENT '등급 기준 ID',
-    `grade_name` VARCHAR(10) NOT NULL COMMENT '등급 이름 (Bronze, Silver, Gold 등)',
-    `min_amount` DECIMAL(10) NOT NULL DEFAULT 0.00 COMMENT '최소 누적 금액',
+    `grade_name` VARCHAR(10) NOT NULL COMMENT '등급 이름 (브론즈, 실버, 골드 등)',
+    `min_amount` DECIMAL(10) NOT NULL DEFAULT 0 COMMENT '최소 누적 금액',
     `max_amount` DECIMAL(10) NULL COMMENT '최대 누적 금액 (NULL이면 상한 없음)',
     `benefit` VARCHAR(255) NULL COMMENT '혜택 설명',
     PRIMARY KEY (`tier_id`),
@@ -73,7 +68,7 @@ CREATE TABLE `Grade_Tiers` (
 -- 7. Grades 테이블
 CREATE TABLE `Grades` (
     `customer_id` INT NOT NULL COMMENT '회원번호',
-    `sum_account` DECIMAL(10) NOT NULL DEFAULT 0.00 COMMENT '누적 구매 금액',
+    `sum_account` DECIMAL(10) NOT NULL DEFAULT 0 COMMENT '누적 구매 금액',
     `grade_name` VARCHAR(10) NOT NULL COMMENT '등급 이름',
     `update_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '갱신 일시',
     `last_calculated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '마지막 계산 시각',
@@ -89,7 +84,7 @@ INSERT INTO `Stores` (`store_name`, `location`) VALUES
 
 INSERT INTO `Grade_Tiers` (`grade_name`, `min_amount`, `max_amount`, `benefit`) VALUES
 ('브론즈', 0, 100000, '5% 할인'),
-('실버', 100001, 500000, '10% 할인'),
+('실버', 100001, 500000.00, '10% 할인'),
 ('골드', 500001, NULL, '15% 할인 + 무료 배송');
 
 INSERT INTO `Customers` (`name`, `phone`, `gender`, `join_date`) VALUES
