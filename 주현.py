@@ -41,7 +41,7 @@ def consumer_interface(conn):
                 continue
 
             try:
-                cursor = conn.cursor()
+                cursor = conn.cursor(buffered=True)  # Buffered 커서 사용
                 cursor.execute("""
                     INSERT INTO Customers (name, phone, gender, join_date)
                     VALUES (%s, %s, %s, CURRENT_DATE)
@@ -59,10 +59,10 @@ def consumer_interface(conn):
             finally:
                 cursor.close()
 
-        elif choice == '2':  # 검색 (전화번호로 변경)
+        elif choice == '2':  # 검색 (오류 수정: Buffered 커서 사용)
             phone = input("전화번호: ")
             try:
-                cursor = conn.cursor()
+                cursor = conn.cursor(buffered=True)  # Buffered 커서로 변경
                 cursor.execute("""
                     SELECT c.name, c.phone, g.sum_account, g.tier_name, b.discount_rate, b.points_reward
                     FROM Customers c
@@ -99,7 +99,7 @@ def admin_interface(conn):
         if choice == '1':  # 구매액 입력
             phone_last4 = input("고객 전화번호 뒷 4자리: ")
             try:
-                cursor = conn.cursor()
+                cursor = conn.cursor(buffered=True)  # Buffered 커서 사용
                 cursor.execute("""
                     SELECT customer_id, name, phone
                     FROM Customers
@@ -154,10 +154,10 @@ def admin_interface(conn):
             finally:
                 cursor.close()
 
-        elif choice == '2':  # 고객 로그 조회 (Enter 오류 수정)
+        elif choice == '2':  # 고객 로그 조회
             name = input("고객 이름 (Enter로 상위 10개 조회): ")
             try:
-                cursor = conn.cursor()
+                cursor = conn.cursor(buffered=True)  # Buffered 커서 사용
                 if name:
                     cursor.execute("""
                         SELECT l.purchase_date, l.account, s.store_name
@@ -189,9 +189,9 @@ def admin_interface(conn):
             finally:
                 cursor.close()
 
-        elif choice == '3':  # 고객 목록 조회 (추가)
+        elif choice == '3':  # 고객 목록 조회
             try:
-                cursor = conn.cursor()
+                cursor = conn.cursor(buffered=True)  # Buffered 커서 사용
                 cursor.execute("""
                     SELECT customer_id, name, phone, gender, join_date
                     FROM Customers
@@ -212,7 +212,7 @@ def admin_interface(conn):
         elif choice == '4':  # 수정
             name = input("수정할 고객 이름: ")
             try:
-                cursor = conn.cursor()
+                cursor = conn.cursor(buffered=True)  # Buffered 커서 사용
                 cursor.execute("SELECT customer_id, name, phone, gender FROM Customers WHERE name = %s", (name,))
                 customers = cursor.fetchall()
                 if not customers:
@@ -245,7 +245,7 @@ def admin_interface(conn):
         elif choice == '5':  # 삭제
             name = input("삭제할 고객 이름: ")
             try:
-                cursor = conn.cursor()
+                cursor = conn.cursor(buffered=True)  # Buffered 커서 사용
                 cursor.execute("SELECT customer_id, name, phone FROM Customers WHERE name = %s", (name,))
                 customers = cursor.fetchall()
                 if not customers:
