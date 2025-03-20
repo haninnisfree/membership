@@ -1,3 +1,22 @@
+/*
+*********************************************************************
+http://www.mysqltutorial.org
+*********************************************************************
+Name: MySQL Sample Database for Python
+Link: http://www.mysqltutorial.org/
+Version 1.1
+*********************************************************************
+*/
+
+/*!40101 SET NAMES utf8 */;
+
+/*!40101 SET SQL_MODE=''*/;
+
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
 -- 1. 데이터베이스 생성 (한글 지원 설정)
 CREATE DATABASE convenience_store_db
     CHARACTER SET utf8mb4
@@ -33,7 +52,7 @@ CREATE TABLE `Logs` (
     `customer_id` INT NOT NULL COMMENT '회원번호',
     `store_id` INT NOT NULL COMMENT '매장 ID',
     `purchase_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '구매 일시',
-    `account` DECIMAL(10, 2) NOT NULL DEFAULT 0.00 COMMENT '구매 금액',
+    `account` DECIMAL(10) NOT NULL DEFAULT 0 COMMENT '구매 금액',
     PRIMARY KEY (`log_id`),
     FOREIGN KEY (`customer_id`) REFERENCES `Customers` (`customer_id`) ON DELETE RESTRICT,
     FOREIGN KEY (`store_id`) REFERENCES `Stores` (`store_id`) ON DELETE RESTRICT,
@@ -44,8 +63,8 @@ CREATE TABLE `Logs` (
 CREATE TABLE `Grade_Tiers` (
     `tier_id` INT NOT NULL AUTO_INCREMENT COMMENT '등급 기준 ID',
     `grade_name` VARCHAR(10) NOT NULL COMMENT '등급 이름 (Bronze, Silver, Gold 등)',
-    `min_amount` DECIMAL(10, 2) NOT NULL DEFAULT 0.00 COMMENT '최소 누적 금액',
-    `max_amount` DECIMAL(10, 2) NULL COMMENT '최대 누적 금액 (NULL이면 상한 없음)',
+    `min_amount` DECIMAL(10) NOT NULL DEFAULT 0.00 COMMENT '최소 누적 금액',
+    `max_amount` DECIMAL(10) NULL COMMENT '최대 누적 금액 (NULL이면 상한 없음)',
     `benefit` VARCHAR(255) NULL COMMENT '혜택 설명',
     PRIMARY KEY (`tier_id`),
     UNIQUE KEY `uk_grade_name` (`grade_name`)
@@ -54,7 +73,7 @@ CREATE TABLE `Grade_Tiers` (
 -- 7. Grades 테이블
 CREATE TABLE `Grades` (
     `customer_id` INT NOT NULL COMMENT '회원번호',
-    `sum_account` DECIMAL(10, 2) NOT NULL DEFAULT 0.00 COMMENT '누적 구매 금액',
+    `sum_account` DECIMAL(10) NOT NULL DEFAULT 0.00 COMMENT '누적 구매 금액',
     `grade_name` VARCHAR(10) NOT NULL COMMENT '등급 이름',
     `update_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '갱신 일시',
     `last_calculated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '마지막 계산 시각',
@@ -69,18 +88,23 @@ INSERT INTO `Stores` (`store_name`, `location`) VALUES
 ('신촌점', '서울 서대문구');
 
 INSERT INTO `Grade_Tiers` (`grade_name`, `min_amount`, `max_amount`, `benefit`) VALUES
-('브론즈', 0.00, 100000.00, '5% 할인'),
-('실버', 100001.00, 500000.00, '10% 할인'),
-('골드', 500001.00, NULL, '15% 할인 + 무료 배송');
+('브론즈', 0, 100000, '5% 할인'),
+('실버', 100001, 500000, '10% 할인'),
+('골드', 500001, NULL, '15% 할인 + 무료 배송');
 
 INSERT INTO `Customers` (`name`, `phone`, `gender`, `join_date`) VALUES
 ('김민수', '01012345678', 'M', '2025-01-01'),
 ('이영희', '01087654321', 'F', '2025-02-01');
 
 INSERT INTO `Logs` (`customer_id`, `store_id`, `purchase_date`, `account`) VALUES
-(1, 1, '2025-03-19 14:30:00', 50000.00),
-(2, 2, '2025-03-19 15:00:00', 150000.00);
+(1, 1, '2025-03-19 14:30:00', 50000),
+(2, 2, '2025-03-19 15:00:00', 150000);
 
 INSERT INTO `Grades` (`customer_id`, `sum_account`, `grade_name`, `update_date`) VALUES
-(1, 50000.00, '브론즈', '2025-03-19 14:30:00'),
-(2, 150000.00, '실버', '2025-03-19 15:00:00');
+(1, 50000, '브론즈', '2025-03-19 14:30:00'),
+(2, 150000, '실버', '2025-03-19 15:00:00');
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
