@@ -1,7 +1,7 @@
 import os
 from configparser import ConfigParser
 
-os.chdir("C:/code/gitproject/pythonproject/CVS/SQL")
+os.chdir("C:\code\gitproject\pythonproject\membership")
 
 def read_config(filename='app.ini', section='mysql'):    
     # Create a ConfigParser object to handle INI file parsing
